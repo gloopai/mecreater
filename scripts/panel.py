@@ -26,10 +26,12 @@ def params_bl(t):
         return 540,960
     return 0,0
 
+# 常用坏图反向词
+ht_fx_ci= 'lowres,bad anatomy,bad hands,text,error, missing fingers, extra digit,fewer digits,cropped,worst quality,low quality,normal quality,jpeg artifacts,signature,watermark,username,blurry, '
+
 # 风格
 fg_data = ["随机","artbook/原画", "game_cg/游戏CG", "comic/漫画"]
 fg_map = {
-     "随机":"",
      "artbook/原画":"artbook, ",
      "game_cg/游戏CG":"game_cg, ",
      "comic/漫画":"comic, "
@@ -37,7 +39,6 @@ fg_map = {
 # 清晰度
 qxd_data = ["默认", "清晰","4k","8k"]
 qxd_map = {
-     "默认":"",
      "清晰":"best quality, ",
      "4k":"masterpiece,best quality,official art,extremely detailed CG unity 4k wallpaper, ",
      "8k":"masterpiece,best quality,official art,extremely detailed CG unity 8k wallpaper, "
@@ -58,8 +59,8 @@ class ExtensionTemplateScript(scripts.Script):
                         with gr.Row():
                             with gr.Column(scale=2):
                                 bl = gr.Radio(["横版", "竖版","自定义"],value="自定义", label="比例", info="横版960x540,竖版540x960，自定义使用默认设置")
-                            # with gr.Column():
-                            #
+                            with gr.Column(scale=2):
+                                ht = gr.CheckboxGroup(["选择"], label="减少坏图", info="会添加一些常用的坏图反向词")
                         # with gr.Row():
                         #     content = gr.TextArea(label="分镜脚本", info="输入分镜脚本(英文),每一段之间用 一个空行 隔开")
                         with gr.Row():
@@ -70,9 +71,9 @@ class ExtensionTemplateScript(scripts.Script):
 
                                
                 # TODO: add more UI components (cf. https://gradio.app/docs/#components)
-                return [bl,fg,qxd]
+                return [bl,ht,fg,qxd]
 
-        def process(self, p, bl,fg,qxd):
+        def process(self, p, bl,ht,fg,qxd):
             # 设置比例
             if bl !='自定义':
                 w,h = params_bl(bl)
@@ -92,3 +93,12 @@ class ExtensionTemplateScript(scripts.Script):
             promptstr = ",".join(newprompt)
             p.prompt = promptstr
             p.all_prompts = [p.prompt]
+
+            print(ht)
+            if ht == ['选择']:
+                htnewprompt = []
+                htnewprompt.append(ht_fx_ci)
+                htnewprompt.append(p.negative_prompt)
+                htfxstr = ",".join(htnewprompt)
+                p.negative_prompt = htfxstr
+                p.all_negative_prompts = [p.negative_prompt]
