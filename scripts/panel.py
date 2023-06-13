@@ -27,21 +27,21 @@ def params_bl(t):
     return 0,0
 
 # 常用坏图反向词
-ht_fx_ci= 'lowres,bad anatomy,bad hands,text,error, missing fingers, extra digit,fewer digits,cropped,worst quality,low quality,normal quality,jpeg artifacts,signature,watermark,username,blurry, '
+ht_fx_ci= 'lowres,bad anatomy,bad hands,text,error, missing fingers, extra digit,fewer digits,cropped,worst quality,low quality,normal quality,jpeg artifacts,signature,watermark,username,blurry'
 
 # 风格
 fg_data = ["随机","artbook/原画", "game_cg/游戏CG", "comic/漫画"]
 fg_map = {
-     "artbook/原画":"artbook, ",
-     "game_cg/游戏CG":"game_cg, ",
-     "comic/漫画":"comic, "
+     "artbook/原画":"artbook",
+     "game_cg/游戏CG":"game_cg",
+     "comic/漫画":"comic"
 }
 # 清晰度
 qxd_data = ["默认", "清晰","4k","8k"]
 qxd_map = {
-     "清晰":"best quality, ",
-     "4k":"masterpiece,best quality,official art,extremely detailed CG unity 4k wallpaper, ",
-     "8k":"masterpiece,best quality,official art,extremely detailed CG unity 8k wallpaper, "
+     "清晰":"best quality",
+     "4k":"masterpiece,best quality,official art,extremely detailed CG unity 4k wallpaper",
+     "8k":"masterpiece,best quality,official art,extremely detailed CG unity 8k wallpaper"
 }
 
 
@@ -88,17 +88,25 @@ class ExtensionTemplateScript(scripts.Script):
             if fg in fg_map:
                  newprompt.append(fg_map[fg])
 
-
+            # 生成新的正向词
             newprompt.append(p.prompt)
             promptstr = ",".join(newprompt)
-            p.prompt = promptstr
-            p.all_prompts = [p.prompt]
+            p.prompt =promptstr
+            newpromptarr = []
+            for item in p.all_prompts:
+                 newpromptarr.append(p.prompt) 
 
-            print(ht)
+            p.all_prompts = newpromptarr
+
+
+            # 生成新的反向词
             if ht == ['选择']:
                 htnewprompt = []
                 htnewprompt.append(ht_fx_ci)
                 htnewprompt.append(p.negative_prompt)
                 htfxstr = ",".join(htnewprompt)
                 p.negative_prompt = htfxstr
-                p.all_negative_prompts = [p.negative_prompt]
+                newhtfxarr = []
+                for item in p.all_negative_prompts:
+                    newhtfxarr.append(p.negative_prompt)
+                p.all_negative_prompts =  newhtfxarr
