@@ -19,7 +19,7 @@ def on_ui_tabs():
     return (weming_creater_view, 'MeCreater', 'weming-mecreater'),
 
 
-script_callbacks.on_ui_tabs(on_ui_tabs)
+# script_callbacks.on_ui_tabs(on_ui_tabs)
 
 
 
