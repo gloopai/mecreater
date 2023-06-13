@@ -14,8 +14,12 @@ def on_ui_tabs():
     with gr.Blocks(analytics_enabled = False) as weming_creater_view:
         with gr.Row(elem_id = 'system_info'):
             with gr.Column(scale = 9):
-               gr.HTML("ssss")
+                inp = gr.Textbox(placeholder="What is your name?")
+                out = gr.Textbox()
     return (weming_creater_view, 'MeCreater', 'weming-mecreater'),
 
 
 script_callbacks.on_ui_tabs(on_ui_tabs)
+
+
+
