@@ -2,7 +2,7 @@
 Author: acheqi@126.com acheqi@126.com
 Date: 2023-06-13 23:03:42
 LastEditors: acheqi@126.com
-LastEditTime: 2023-06-14 00:02:05
+LastEditTime: 2023-06-14 02:18:58
 Description: 
 '''
 
@@ -26,17 +26,29 @@ def params_bl(t):
         return 540,960
     return 0,0
 
+# 风格
+fg_data = ["随机","artbook/原画", "game_cg/游戏CG", "comic/漫画"]
+fg_map = {
+     "随机":"",
+     "artbook/原画":"artbook, ",
+     "game_cg/游戏CG":"game_cg, ",
+     "comic/漫画":"comic, "
+}
+# 清晰度
+qxd_data = ["默认", "清晰","4k","8k"]
+qxd_map = {
+     "默认":"",
+     "清晰":"best quality, ",
+     "4k":"masterpiece,best quality,official art,extremely detailed CG unity 4k wallpaper, ",
+     "8k":"masterpiece,best quality,official art,extremely detailed CG unity 8k wallpaper, "
+}
+
 
 class ExtensionTemplateScript(scripts.Script):
         # Extension title in menu UI
         def title(self):
                 return "MeCreatePanel"
 
-        # Decide to show menu in txt2img or img2img
-        # - in "txt2img" -> is_img2img is `False`
-        # - in "img2img" -> is_img2img is `True`
-        #
-        # below code always show extension menu
         def show(self, is_img2img):
                 return scripts.AlwaysVisible
 
@@ -48,18 +60,35 @@ class ExtensionTemplateScript(scripts.Script):
                                 bl = gr.Radio(["横版", "竖版","自定义"],value="自定义", label="比例", info="横版960x540,竖版540x960，自定义使用默认设置")
                             # with gr.Column():
                             #
+                        # with gr.Row():
+                        #     content = gr.TextArea(label="分镜脚本", info="输入分镜脚本(英文),每一段之间用 一个空行 隔开")
                         with gr.Row():
-                            content = gr.Textbox(placeholder="What is your name?")
+                            with gr.Column(scale=2):
+                                fg = gr.Dropdown(fg_data, label="风格", info="选择画风",value="随机")
+                            with gr.Column(scale=2):
+                                qxd = gr.Radio(qxd_data,value="默认", label="清晰度", info="生成画面的清晰度")
+
                                
                 # TODO: add more UI components (cf. https://gradio.app/docs/#components)
-                return [bl]
+                return [bl,fg,qxd]
 
-        # Extension main process
-        # Type: (StableDiffusionProcessing, List<UI>) -> (Processed)
-        # args is [StableDiffusionProcessing, UI1, UI2, ...]
-        def process(self, p, bl):
+        def process(self, p, bl,fg,qxd):
             # 设置比例
             if bl !='自定义':
                 w,h = params_bl(bl)
                 p.width = w
                 p.height= h
+            
+            newprompt = []
+            # 清晰度
+            if qxd in qxd_map:
+                 newprompt.append(qxd_map[qxd])
+            # 风格
+            if fg in fg_map:
+                 newprompt.append(fg_map[fg])
+
+
+            newprompt.append(p.prompt)
+            promptstr = ",".join(newprompt)
+            p.prompt = promptstr
+            p.all_prompts = [p.prompt]
