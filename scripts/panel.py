@@ -1,3 +1,10 @@
+'''
+Author: acheqi@126.com acheqi@126.com
+Date: 2023-06-13 23:03:42
+LastEditors: acheqi@126.com
+LastEditTime: 2023-06-14 00:02:05
+Description: 
+'''
 
 
 
@@ -40,7 +47,9 @@ class ExtensionTemplateScript(scripts.Script):
                             with gr.Column(scale=2):
                                 bl = gr.Radio(["横版", "竖版","自定义"],value="自定义", label="比例", info="横版960x540,竖版540x960，自定义使用默认设置")
                             # with gr.Column():
-                            #     
+                            #
+                        with gr.Row():
+                            content = gr.Textbox(placeholder="What is your name?")
                                
                 # TODO: add more UI components (cf. https://gradio.app/docs/#components)
                 return [bl]
