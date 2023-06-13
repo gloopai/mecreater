@@ -1,52 +1,12 @@
-# System Info tab extensions for SD Automatic WebUI
+# 通过webui快速的生成短视频图片
+安装方法
+插件管理中url安装,输入
+```
+https://github.com/codewithevan/mecreater.git
+```
 
-Creates a top-level **System Info** tab in Automatic WebUI with
+或者直接下载项目代码放到 webui的 /extensions 下即刻
 
-*Note*:
-
-- State & memory info are auto-updated every second if tab is visible  
-  (no updates are performed when tab is not visible)  
-- All other information is updated once upon WebUI load and  
-  can be force refreshed if required  
-
-## Current information
-
-- Server start time
-- Version
-- Current Model & VAE
-- Current State
-- Current Memory statistics
-
-## System data
-
-- Platform details
-- Torch, CUDA and GPU details
-- Active CMD flags such as `low-vram` or `med-vram`
-- Versions of critical libraries as `xformers`, `transformers`, etc.
-- Versions of dependent repositories such as `k-diffusion`, etc.
-
-![screenshot](system-info.jpg)
-
-## Benchmark
-
-- Allows to run standardized benchmark and optionally submit data to cloud logger [[details]](pages/README.md)
-
-![screenshot](benchmark.jpg)
-
-- *Note: Record is appended if any of the system properties change else benchmark data replaces existing matching record*
-
-- All results can be [viewed online](https://vladmandic.github.io/sd-extension-system-info/pages/benchmark.html)
-
-## Models
-
-- Models (with hash)
-- Hypernetworks
-- Embeddings (including info on number of vectors per embedding)
-
-  ![screenshot](system-info-models.jpg)
-
-## Info Object
-
-- System object is available as JSON for quick passing of information
-
-  ![screenshot](system-info-json.jpg)
+计划会增加的功能
+1.输入一段网文文字，自动批量生成图片，主要是利用sd多次生成可以控制多张图片生成风格接近的特性
+2.....
