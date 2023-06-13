@@ -10,3 +10,4 @@ https://github.com/codewithevan/mecreater.git
 计划会增加的功能
 1.输入一段网文文字，自动批量生成图片，主要是利用sd多次生成可以控制多张图片生成风格接近的特性
 2.....
+![image](https://static.xiweiapp.com/1/2023/06/5d170d45-5034-4343-a0f4-22ce093e2554.png))
