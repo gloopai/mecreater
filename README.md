@@ -5,7 +5,7 @@
 https://github.com/codewithevan/mecreater.git
 ```
 
-或者直接下载项目代码放到 webui的 /extensions 下即刻
+或者直接下载项目代码放到 webui的 /extensions 下即可
 
 计划会增加的功能
 
