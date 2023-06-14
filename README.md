@@ -13,7 +13,10 @@ https://github.com/codewithevan/mecreater.git
 ### 使用方法
 ## 分镜控制
 1.直接在正向提示词中输入分镜脚本（需要时英文）
+
 2.每个分镜一行
+
 3.分镜数量必须与批次数量匹配，
+
 如:16个分镜，就设置 批次(Batch count) 2，单批数量(Batch size) 8
 
