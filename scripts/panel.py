@@ -35,6 +35,40 @@ def params_yuanjin(t):
         return '(' * abs(t) + 'close-up,' + ')' * abs(t)
     else:
         return '(' * t + 'Full body panoramic view,' + ')' * t
+    
+
+# 分镜使用帮助
+fenjing_tips = """
+                #### 使用方法
+
+                ##### 第一步:在提示词中每行一个分镜输入英文提示词
+
+                ```
+                    注意:每个分镜脚本放一行，会根据每行进行自动分割
+                    
+                    如：
+                    gril, car,short hair,red hair, sports bra , 
+                    boy, sea,short hair,black hair,  
+                ```
+                ##### 第二步:根据分镜数量设置 生成批次(Batch count)和单批数量(Batch size)
+                ```
+                    注意: 这一步一定不能漏，否则会出现生成索引溢出的错误
+                    设置计算公式为: 分镜数量 = Batch count * Batch size
+                    如：分镜数量 2
+                    设置 生成批次(Batch count) 为 1
+                    设置 单批数量(Batch size) 为 2
+                     
+                ```
+                ##### 第三步:打开分镜切割开关
+                ```
+                    确认分镜切割已经勾选
+                ```
+                ##### 第四步:点击生成图片
+                ```
+                    等待图片生成完成
+                ```
+
+                """
 
 # 常用坏图反向词
 ht_fx_ci= 'lowres,bad anatomy,bad hands,text,error, missing fingers, extra digit,fewer digits,cropped,worst quality,low quality,normal quality,jpeg artifacts,signature,watermark,username,blurry'
@@ -66,9 +100,13 @@ class ExtensionTemplateScript(scripts.Script):
         # Setup menu ui detail
         def ui(self, is_img2img):
                 with gr.Accordion('MeCreater(AI网文助手)', open=False):
+                    with gr.Tab("分镜"):
                         with gr.Row():
                             with gr.Column(scale=2):
                                 auto_split = gr.CheckboxGroup(["开启"], label="分镜切割", info="会根据提示词换行分割分镜，注意: 分镜数量(提示词行数) = (批次)Batch count * (单批数量)Batch size 需手动设置")
+                        with gr.Row():
+                             gr.Markdown(fenjing_tips)
+                    with gr.Tab("画面"):
                         with gr.Row():
                             with gr.Column(scale=2):
                                 bl = gr.Radio(["横版", "竖版","自定义"],value="自定义", label="比例", info="横版450x300,竖版300x450，自定义使用默认设置")
@@ -76,12 +114,15 @@ class ExtensionTemplateScript(scripts.Script):
                                 ht = gr.CheckboxGroup(["选择"], label="减少坏图", info="会添加一些常用的坏图反向词")
                         with gr.Row():
                             with gr.Column(scale=2):
-                                fg = gr.Dropdown(fg_data, label="风格", info="选择画风",value="随机")
-                            with gr.Column(scale=2):
                                 qxd = gr.Radio(qxd_data,value="默认", label="清晰度", info="生成画面的清晰度")
-                        with gr.Row():
-                             yuanjin = gr.Slider(minimum=-6,maximum=6 , value=0, label="画面远近", info="数值越小，人像越大,数值越大人像越大，但是越容易崩脸，所有图片生效")
-
+                            with gr.Column(scale=2):
+                                yuanjin = gr.Slider(minimum=-6,maximum=6 , value=0, label="画面远近", info="数值越小，人像越大,数值越大人像越大，但是越容易崩脸，所有图片生效")
+                    with gr.Tab("风格"):
+                         with gr.Row():
+                              with gr.Column(scale=2):
+                                fg = gr.Dropdown(fg_data, label="风格", info="选择画风",value="随机")
+                    with gr.Tab("其他"):
+                         gr.Label("开发中")
                                
                 # TODO: add more UI components (cf. https://gradio.app/docs/#components)
                 return [auto_split,bl,ht,fg,qxd,yuanjin]
