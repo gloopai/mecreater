@@ -21,10 +21,20 @@ from modules.shared import opts, cmd_opts, state
  # 比例计算
 def params_bl(t):
     if t =='横版':
-        return 960,540
+        return 450,300
     if t =='竖版':
-        return 540,960
+        return 300,450
     return 0,0
+
+# 景深
+def params_yuanjin(t):
+    t = int(t)
+    if t == 0:
+        return ""
+    elif t < 0:
+        return '(' * abs(t) + 'close-up,' + ')' * abs(t)
+    else:
+        return '(' * t + 'Full body panoramic view,' + ')' * t
 
 # 常用坏图反向词
 ht_fx_ci= 'lowres,bad anatomy,bad hands,text,error, missing fingers, extra digit,fewer digits,cropped,worst quality,low quality,normal quality,jpeg artifacts,signature,watermark,username,blurry'
@@ -58,28 +68,31 @@ class ExtensionTemplateScript(scripts.Script):
                 with gr.Accordion('MeCreater(AI网文助手)', open=False):
                         with gr.Row():
                             with gr.Column(scale=2):
-                                bl = gr.Radio(["横版", "竖版","自定义"],value="自定义", label="比例", info="横版960x540,竖版540x960，自定义使用默认设置")
+                                auto_split = gr.CheckboxGroup(["开启"], label="分镜切割", info="会根据提示词换行分割分镜，注意: 分镜数量(提示词行数) = (批次)Batch count * (单批数量)Batch size 需手动设置")
+                        with gr.Row():
+                            with gr.Column(scale=2):
+                                bl = gr.Radio(["横版", "竖版","自定义"],value="自定义", label="比例", info="横版450x300,竖版300x450，自定义使用默认设置")
                             with gr.Column(scale=2):
                                 ht = gr.CheckboxGroup(["选择"], label="减少坏图", info="会添加一些常用的坏图反向词")
-                        # with gr.Row():
-                        #     content = gr.TextArea(label="分镜脚本", info="输入分镜脚本(英文),每一段之间用 一个空行 隔开")
                         with gr.Row():
                             with gr.Column(scale=2):
                                 fg = gr.Dropdown(fg_data, label="风格", info="选择画风",value="随机")
                             with gr.Column(scale=2):
                                 qxd = gr.Radio(qxd_data,value="默认", label="清晰度", info="生成画面的清晰度")
+                        with gr.Row():
+                             yuanjin = gr.Slider(minimum=-6,maximum=6 , value=0, label="画面远近", info="数值越小，人像越大,数值越大人像越大，但是越容易崩脸，所有图片生效")
 
                                
                 # TODO: add more UI components (cf. https://gradio.app/docs/#components)
-                return [bl,ht,fg,qxd]
+                return [auto_split,bl,ht,fg,qxd,yuanjin]
 
-        def process(self, p, bl,ht,fg,qxd):
+        def process(self, p,auto_split, bl,ht,fg,qxd,yuanjin):
             # 设置比例
             if bl !='自定义':
                 w,h = params_bl(bl)
                 p.width = w
                 p.height= h
-            
+
             newprompt = []
             # 清晰度
             if qxd in qxd_map:
@@ -88,16 +101,28 @@ class ExtensionTemplateScript(scripts.Script):
             if fg in fg_map:
                  newprompt.append(fg_map[fg])
 
+            # 画面远近
+            newprompt.append(params_yuanjin(yuanjin))
+
+
             # 生成新的正向词
-            newprompt.append(p.prompt)
             promptstr = ",".join(newprompt)
-            p.prompt =promptstr
-            newpromptarr = []
-            for item in p.all_prompts:
-                 newpromptarr.append(p.prompt) 
 
-            p.all_prompts = newpromptarr
+            if auto_split!=["开启"]:
+                p.prompt = f'{promptstr},{p.prompt}'
+            else:
+                 # 处理脚本分段
+                oldPromptArr = []
+                oldPromptArr = p.prompt.split("\n")
+                newpromptarr = []
+                for i in oldPromptArr:
+                    item = ""
+                    item = f'{promptstr},{i}'
+                    newpromptarr.append(item)
 
+                p.all_prompts = newpromptarr
+                p.prompt = ""
+                
 
             # 生成新的反向词
             if ht == ['选择']:
