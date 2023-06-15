@@ -70,7 +70,7 @@ git pull
 
 ## 特别感谢
 
-@ 游戏加加 Co2 https://gamepp.com/
+@ 游戏加加 Co2 提供算力测试算力资源以及产品思路 https://gamepp.com/
 
 @ 漫文创作大师兄 提供了插件功能思路
 
