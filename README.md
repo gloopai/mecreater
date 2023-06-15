@@ -1,4 +1,4 @@
-# AI漫文老司机
+# AI漫文创作助手
 基于Stable Diffusion WebUI 的网文生成动漫短视频使用的插件
 
 还在持续更新中 
