@@ -100,6 +100,4 @@ git pull
 
 如果在插件使用过程中碰到了什么问题，或者有需求，希望增加到插件中，可以进入QQ群：
 
-```
-173787712
-```
+![image](https://github.com/codewithevan/mecreater/assets/4951627/e66f3926-480c-4b67-a017-da6987f50c10)
