@@ -23,6 +23,11 @@
 
 <img width="906" alt="image" src="https://github.com/codewithevan/mecreater/assets/4951627/03ee6055-e087-4776-83e7-be8f25ee148b">
 
+### 批量出图分镜控制
+
+<img width="905" alt="image" src="https://github.com/codewithevan/mecreater/assets/4951627/14f6b79d-7765-49cf-801b-2889937c3f55">
+
+
 ### 画面风格微调处理
 
 精选风格提示词，并界面化操作，提示词会持续更新
