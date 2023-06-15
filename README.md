@@ -3,6 +3,21 @@
 
 还在持续更新中
 
+## 主要功能
+
+### 分镜脚本批量出图
+简化出图步骤，分镜内容独立控制，批量生成图片
+
+<img width="906" alt="image" src="https://github.com/codewithevan/mecreater/assets/4951627/03ee6055-e087-4776-83e7-be8f25ee148b">
+
+### 画面风格微调处理
+
+精选风格提示词，并界面化操作，提示词会持续更新
+
+<img width="905" alt="image" src="https://github.com/codewithevan/mecreater/assets/4951627/7a7766b0-1404-498c-b600-8cf3f3897c34">
+
+
+
 ## 安装方法
 
 ### 方法1: WebUi 中 Extensions(插件)/Install From Url(通过Url安装) 安装
@@ -47,15 +62,4 @@ git pull
 ```
 
 即可完成更新
-
-
-### 使用方法
-## 分镜控制
-1.直接在正向提示词中输入分镜脚本（需要时英文）
-
-2.每个分镜一行
-
-3.分镜数量必须与批次数量匹配，
-
-如:16个分镜，就设置 批次(Batch count) 2，单批数量(Batch size) 8
 
