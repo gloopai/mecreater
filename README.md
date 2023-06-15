@@ -21,17 +21,20 @@
 ### 分镜脚本批量出图
 简化出图步骤，分镜内容独立控制，批量生成图片
 
-<img width="906" alt="image" src="https://github.com/codewithevan/mecreater/assets/4951627/03ee6055-e087-4776-83e7-be8f25ee148b">
+<img width="895" alt="image" src="https://github.com/codewithevan/mecreater/assets/4951627/1be63829-df45-4753-bb21-bf872a4db11c">
+
 
 ### 批量出图分镜控制
 
-<img width="902" alt="image" src="https://github.com/codewithevan/mecreater/assets/4951627/a7360255-1b5a-4ca3-b3eb-16246c9797cc">
+<img width="891" alt="image" src="https://github.com/codewithevan/mecreater/assets/4951627/0588c4c1-2220-4c74-8a79-fabdc777893d">
+
 
 ### 画面风格微调处理
 
 精选风格提示词，并界面化操作，提示词会持续更新
 
-<img width="905" alt="image" src="https://github.com/codewithevan/mecreater/assets/4951627/7a7766b0-1404-498c-b600-8cf3f3897c34">
+<img width="896" alt="image" src="https://github.com/codewithevan/mecreater/assets/4951627/9049e50b-dbc9-4918-9f0e-c5260c6e214e">
+
 
 
 
