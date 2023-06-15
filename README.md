@@ -25,8 +25,7 @@
 
 ### 批量出图分镜控制
 
-<img width="905" alt="image" src="https://github.com/codewithevan/mecreater/assets/4951627/14f6b79d-7765-49cf-801b-2889937c3f55">
-
+<img width="902" alt="image" src="https://github.com/codewithevan/mecreater/assets/4951627/a7360255-1b5a-4ca3-b3eb-16246c9797cc">
 
 ### 画面风格微调处理
 
