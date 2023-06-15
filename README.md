@@ -26,11 +26,7 @@ git clone https://github.com/codewithevan/mecreater.git
 
 ### 方法3: 插件包下载安装
 
-点击右上角 
-
-<img width="176" alt="image" src="https://github.com/codewithevan/mecreater/assets/4951627/a92e42f0-b515-462c-a721-eb917ff14a69">
-
-<img width="505" alt="image" src="https://github.com/codewithevan/mecreater/assets/4951627/2fea8550-d9ba-4db0-8fd6-5bd1071de843">
+点击右上角 绿色[Code],弹出的界面中 [Donwload Zip] 即可下载插件包
 
 下载插件包到WebUi 目录  /extensions 下即可
 
