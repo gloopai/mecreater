@@ -225,7 +225,7 @@ class ExtensionTemplateScript(scripts.Script):
 
         # Setup menu ui detail
         def ui(self, is_img2img):
-                with gr.Accordion('AI漫文老司机', open=False):
+                with gr.Accordion('AI漫文创作助手', open=False):
                     with gr.Tab("快速分镜"):
                         with gr.Row():
                             with gr.Column(scale=2):
@@ -239,10 +239,10 @@ class ExtensionTemplateScript(scripts.Script):
                                 yuanjin_suiji = gr.Checkbox(value=False, label="远近随机", info="开启后人物远近随机")
                                 goutu_suiji = gr.Checkbox(value=False, label="构图随机", info="开启后人物和构图随机")
                                 jintou_suiji =  gr.Checkbox(value=False, label="镜头随机", info="开启后出图镜头角度随机")
-                        with gr.Row():
-                            storyboard_rule = gr.TextArea(label="高级规则",info="使用脚本进行规则配置,使用此规则时，上边的随机规则失效")
-                        with gr.Row():
-                            gr.HTML(fenjing_storybord_tips)
+                        # with gr.Row():
+                        #     storyboard_rule = gr.TextArea(label="高级规则",info="使用脚本进行规则配置,使用此规则时，上边的随机规则失效")
+                        # with gr.Row():
+                        #     gr.HTML(fenjing_storybord_tips)
                        
                     with gr.Tab("画面"):
                         with gr.Row():
@@ -259,13 +259,13 @@ class ExtensionTemplateScript(scripts.Script):
                          with gr.Row():
                               with gr.Column(scale=2):
                                 fg = gr.Dropdown(fg_data, label="风格", info="选择画风",value="随机")
-                    with gr.Tab("其他"):
-                         gr.Label("开发中")
+                    # with gr.Tab("其他"):
+                    #      gr.Label("开发中")
                                
                 # TODO: add more UI components (cf. https://gradio.app/docs/#components)
-                return [auto_split,bl,ht,fg,qxd,yuanjin,storyboard_rule,yuanjin_suiji,goutu_suiji,jintou_suiji]
+                return [auto_split,bl,ht,fg,qxd,yuanjin,yuanjin_suiji,goutu_suiji,jintou_suiji]
 
-        def process(self, p,auto_split, bl,ht,fg,qxd,yuanjin,storyboard_rule,yuanjin_suiji,goutu_suiji,jintou_suiji):
+        def process(self, p,auto_split, bl,ht,fg,qxd,yuanjin,yuanjin_suiji,goutu_suiji,jintou_suiji):
             # 设置比例
             if bl !='自定义':
                 w,h = params_bl(bl)
