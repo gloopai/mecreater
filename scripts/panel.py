@@ -99,7 +99,7 @@ class ExtensionTemplateScript(scripts.Script):
 
         # Setup menu ui detail
         def ui(self, is_img2img):
-                with gr.Accordion('MeCreater(AI网文助手)', open=False):
+                with gr.Accordion('AI漫文老司机', open=False):
                     with gr.Tab("分镜"):
                         with gr.Row():
                             with gr.Column(scale=2):
