@@ -100,4 +100,5 @@ git pull
 
 如果在插件使用过程中碰到了什么问题，或者有需求，希望增加到插件中，可以进入QQ群：
 
-![image](https://github.com/codewithevan/mecreater/assets/4951627/e66f3926-480c-4b67-a017-da6987f50c10)
+![WechatIMG2600](https://github.com/codewithevan/mecreater/assets/4951627/18f5da9c-aff7-4e0d-8c51-fa07bf8dfe94)
+
