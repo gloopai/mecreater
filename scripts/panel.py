@@ -37,7 +37,7 @@ def params_yuanjin(t):
         return '(' * abs(t) + 'close-up,' + ')' * abs(t)
     else:
         return '(' * t + 'Full body panoramic view,' + ')' * t
-yuanjin_list = [-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6]
+yuanjin_list = [-3,-2,-1,0,1,2,3]
 # 随机远近
 def params_random_yuanjin():
     return params_yuanjin(random.choice(yuanjin_list))
