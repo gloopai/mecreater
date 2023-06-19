@@ -9,6 +9,7 @@ Description:
 
 
 import json
+import requests
 import random
 import modules.scripts as scripts
 import gradio as gr
@@ -18,8 +19,7 @@ from modules import images, script_callbacks
 from modules.processing import process_images, Processed
 from modules.processing import Processed
 from modules.shared import opts, cmd_opts, state
-
-
+            
  # 比例计算
 def params_bl(t):
     if t =='横版':
@@ -63,6 +63,8 @@ fenjing_tips = """
                     如：分镜数量 2
                     设置 生成批次(Batch count) 为 1
                     设置 单批数量(Batch size) 为 2
+
+                    再次注意:这里的计算结果数量一定要和提示词输入框中的分镜条数对应
                      
                 ```
                 ##### 第三步:打开分镜切割开关
@@ -80,9 +82,7 @@ fenjing_jingxi_tips = """
     精细分镜是基于开启了快速分镜之后才会生效的配置，如果要进行精细分镜控制，需要先开启快速分镜
     ```
 """
-fenjing_storybord_tips = """
-规则脚本需要使用工具 [<a href="https://xiweiapp.com/ai/storebord" target="_blank">点击这里打开工具</a>]
-                        """
+
 
 # 常用坏图反向词
 ht_fx_ci= 'lowres,bad anatomy,bad hands,text,error, missing fingers, extra digit,fewer digits,cropped,worst quality,low quality,normal quality,jpeg artifacts,signature,watermark,username,blurry'
@@ -215,6 +215,45 @@ def params_storyboard_rule(index,rule):
      
 
 
+yunduan_tips = """
+    ```
+        云端脚本功能和插件其他功能是互斥的，使用云端脚本时，[AI漫文创作助手]其他功能的配置不会生效
+        如果需要使用插件配置功能，点击[卸载云端脚本]即可
+    ```
+"""
+
+yunduan_tips_status = False
+# 读取远程脚本
+def yunduan_read_action(_p_yunduan_key,_p_yunduan_id):
+    if  _p_yunduan_id== '' or _p_yunduan_key=='':
+        return "请先输入云端账户Key和脚本ID"
+    params = {
+        "app_key":"bc01b43c-a0e2-4007-ad09-033b95cf1d6e",
+        "method":"ai.center",
+        "data":{
+            "command":"storyboard.get.guid",
+            "client_key":_p_yunduan_key,
+            "story_guid":_p_yunduan_id
+        }
+        
+    }
+    header = {
+        "x-token":""
+    }
+    try:
+        res = requests.post(url="https://api.xiweiapp.com/v2/client",json=params,headers=header)
+        if res.status_code!=200:
+            return "云端脚本加载失败"
+        resjson = res.json()
+        if resjson['code']!=20000:
+            return resjson['message']
+    except Exception as err:
+        return f"{err}"
+    return ""
+# 清理云端脚本
+def yunduan_clear_action():
+    return "","","未读取"
+
 class ExtensionTemplateScript(scripts.Script):
         # Extension title in menu UI
         def title(self):
@@ -239,10 +278,6 @@ class ExtensionTemplateScript(scripts.Script):
                                 yuanjin_suiji = gr.Checkbox(value=False, label="远近随机", info="开启后人物远近随机")
                                 goutu_suiji = gr.Checkbox(value=False, label="构图随机", info="开启后人物和构图随机")
                                 jintou_suiji =  gr.Checkbox(value=False, label="镜头随机", info="开启后出图镜头角度随机")
-                        # with gr.Row():
-                        #     storyboard_rule = gr.TextArea(label="高级规则",info="使用脚本进行规则配置,使用此规则时，上边的随机规则失效")
-                        # with gr.Row():
-                        #     gr.HTML(fenjing_storybord_tips)
                        
                     with gr.Tab("画面"):
                         with gr.Row():
@@ -259,13 +294,43 @@ class ExtensionTemplateScript(scripts.Script):
                          with gr.Row():
                               with gr.Column(scale=2):
                                 fg = gr.Dropdown(fg_data, label="风格", info="选择画风",value="随机")
+
+                    with gr.Tab("云端脚本"):
+                        with gr.Row():
+                            gr.Markdown(yunduan_tips)
+                        with gr.Row():
+                            with gr.Column(scale=1):
+                                yunduan_key =  gr.Text(label="云端账户Key",info="请在 https://ai.quwuxian.com 登录后获取")
+                            with gr.Column(scale=1):
+                                yunduan_id = gr.Text(label="输入云端脚本ID",info="输入云端脚本ID后,点击[加载云端脚本],配置才会生效")
+                        with gr.Row():
+                                yunduan_status = gr.Textbox(label="加载状态",value="未读取",info="请在这里显示加载成功后再进行图片生成")
+                        with gr.Row():
+                            with gr.Column(scale=1):
+                                yunduan_read= gr.Button(value="加载云端脚本",)
+                                yunduan_read.click(yunduan_read_action,inputs=[yunduan_key,yunduan_id], outputs=yunduan_status)
+                            with gr.Column(scale=1):
+                                yunduan_clear = gr.Button(value="卸载云端脚本")
+                                yunduan_clear.click(yunduan_clear_action,outputs=[yunduan_key,yunduan_id,yunduan_status])
+                        
+                        with gr.Row():
+                            gr.Markdown(
+                                """
+                                ### 云端脚本使用帮助
+                                """)
+                        with gr.Row():
+                            gr.Markdown(
+                                """
+                                # Hello World!
+                                Start typing below to see the output.
+                                """,visible=yunduan_tips_status)
                     # with gr.Tab("其他"):
                     #      gr.Label("开发中")
                                
                 # TODO: add more UI components (cf. https://gradio.app/docs/#components)
-                return [auto_split,bl,ht,fg,qxd,yuanjin,yuanjin_suiji,goutu_suiji,jintou_suiji]
+                return [auto_split,bl,ht,fg,qxd,yuanjin,yuanjin_suiji,goutu_suiji,jintou_suiji,yunduan_id]
 
-        def process(self, p,auto_split, bl,ht,fg,qxd,yuanjin,yuanjin_suiji,goutu_suiji,jintou_suiji):
+        def process(self, p,auto_split, bl,ht,fg,qxd,yuanjin,yuanjin_suiji,goutu_suiji,jintou_suiji,yunduan_id):
             # 设置比例
             if bl !='自定义':
                 w,h = params_bl(bl)
