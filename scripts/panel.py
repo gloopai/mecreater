@@ -222,37 +222,49 @@ yunduan_tips = """
     ```
 """
 
-yunduan_tips_status = False
-# 读取远程脚本
-def yunduan_read_action(_p_yunduan_key,_p_yunduan_id):
-    if  _p_yunduan_id== '' or _p_yunduan_key=='':
-        return "请先输入云端账户Key和脚本ID"
-    params = {
-        "app_key":"bc01b43c-a0e2-4007-ad09-033b95cf1d6e",
-        "method":"ai.center",
-        "data":{
-            "command":"storyboard.get.guid",
-            "client_key":_p_yunduan_key,
-            "story_guid":_p_yunduan_id
-        }
-        
-    }
-    header = {
-        "x-token":""
-    }
+yunduan_tips_status = False 
+yunduan_task =  []
+
+# 加载数据  
+def yunyuan_load(guid,page):
+    global yunduan_task
+    params = {"app_key":"bc01b43c-a0e2-4007-ad09-033b95cf1d6e", "method":"ai.center","data":{"command":"storyboard.task.get.by.webui","data":{"page":page,"task_guid":guid}}}
+    header = {"x-token":""}
     try:
         res = requests.post(url="https://api.xiweiapp.com/v2/client",json=params,headers=header)
         if res.status_code!=200:
             return "云端脚本加载失败"
         resjson = res.json()
-        if resjson['code']!=20000:
+        if resjson['code']==50000:
             return resjson['message']
+        if resjson['code'] == 20002:
+            return resjson['message']
+        data = resjson['data']
+        for item in data:
+            yunduan_task.append(item)
+        if resjson['code']!=20001:
+            yunyuan_load(guid,page+1)
+        else:
+            resmsg = f'云端脚本 {guid} 加载完成，共计 {len(yunduan_task)} 个分镜'
+            print(resmsg)
+            return  resmsg#resjson['message']
     except Exception as err:
         return f"{err}"
-    return ""
+
+# 读取远程脚本
+def yunduan_read_action(_p_yunduan_id):
+    if  _p_yunduan_id== '':
+        return "请先输入云端脚本 GUID"
+    global yunduan_task
+    yunduan_task = []
+    return yunyuan_load(_p_yunduan_id,1)
+    
 # 清理云端脚本
 def yunduan_clear_action():
-    return "","","未读取"
+    # print(yunduan_task)
+    global yunduan_task
+    yunduan_task = []
+    return "","云端脚本卸载完成"
 
 class ExtensionTemplateScript(scripts.Script):
         # Extension title in menu UI
@@ -300,18 +312,16 @@ class ExtensionTemplateScript(scripts.Script):
                             gr.Markdown(yunduan_tips)
                         with gr.Row():
                             with gr.Column(scale=1):
-                                yunduan_key =  gr.Text(label="云端账户Key",info="请在 https://ai.quwuxian.com 登录后获取")
-                            with gr.Column(scale=1):
                                 yunduan_id = gr.Text(label="输入云端脚本ID",info="输入云端脚本ID后,点击[加载云端脚本],配置才会生效")
                         with gr.Row():
                                 yunduan_status = gr.Textbox(label="加载状态",value="未读取",info="请在这里显示加载成功后再进行图片生成")
                         with gr.Row():
                             with gr.Column(scale=1):
                                 yunduan_read= gr.Button(value="加载云端脚本",)
-                                yunduan_read.click(yunduan_read_action,inputs=[yunduan_key,yunduan_id], outputs=yunduan_status)
+                                yunduan_read.click(yunduan_read_action,inputs=[yunduan_id], outputs=yunduan_status)
                             with gr.Column(scale=1):
                                 yunduan_clear = gr.Button(value="卸载云端脚本")
-                                yunduan_clear.click(yunduan_clear_action,outputs=[yunduan_key,yunduan_id,yunduan_status])
+                                yunduan_clear.click(yunduan_clear_action,outputs=[yunduan_id,yunduan_status])
                         
                         with gr.Row():
                             gr.Markdown(
@@ -330,7 +340,22 @@ class ExtensionTemplateScript(scripts.Script):
                 # TODO: add more UI components (cf. https://gradio.app/docs/#components)
                 return [auto_split,bl,ht,fg,qxd,yuanjin,yuanjin_suiji,goutu_suiji,jintou_suiji,yunduan_id]
 
+
+
         def process(self, p,auto_split, bl,ht,fg,qxd,yuanjin,yuanjin_suiji,goutu_suiji,jintou_suiji,yunduan_id):
+            global yunduan_task
+            if len(yunduan_task)>0:
+                print(f'执行云端脚本 共计 {len(yunduan_task)} 个分镜')
+                allPrompts = []
+                allNegativePrompt = []
+                for item in yunduan_task:
+                    allPrompts.append(item['prompts'])
+                    allNegativePrompt.append(item['negative_prompts'])
+                p.all_prompts = allPrompts
+                p.all_negative_prompts = allNegativePrompt
+
+                return
+
             # 设置比例
             if bl !='自定义':
                 w,h = params_bl(bl)
@@ -385,3 +410,5 @@ class ExtensionTemplateScript(scripts.Script):
                 for item in p.all_negative_prompts:
                     newhtfxarr.append(p.negative_prompt)
                 p.all_negative_prompts =  newhtfxarr
+
+ 
