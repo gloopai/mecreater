@@ -20,7 +20,8 @@ from modules.processing import process_images, Processed
 from modules.processing import Processed
 from modules.shared import opts, cmd_opts, state
 
-            
+build_ver = "20230624"
+
  # 比例计算
 def params_bl(t):
     if t =='横版':
@@ -221,7 +222,7 @@ class ExtensionTemplateScript(scripts.Script):
 
         # Setup menu ui detail
         def ui(self, is_img2img):
-                with gr.Accordion('AI漫文创作助手[画质增强]', open=False):
+                with gr.Accordion(f'AI漫文创作助手[画质增强]({build_ver})', open=False):
                     with gr.Tab("画面"):
                         with gr.Row():
                             with gr.Column(scale=2):
@@ -415,7 +416,7 @@ def piliang_model_change():
 import copy
 class Script(scripts.Script):
     def title(self):    
-        return "AI漫文创作助手-批量出图"
+        return f"AI漫文创作助手-批量出图({build_ver})"
 
     def ui(self, is_img2img):
         with gr.Tab("提示词切割"):
@@ -453,13 +454,14 @@ class Script(scripts.Script):
                     "negative_prompts":p.negative_prompt
                 })
 
-
         # 处理prompts
         allPrompts = []
         allNegativePrompt = []
         for item in prompts_list:
             allPrompts.append(item['prompts'])
             allNegativePrompt.append(item['negative_prompts'])
+
+
         p.all_prompts = allPrompts
         p.all_negative_prompts = allNegativePrompt
 
@@ -472,11 +474,18 @@ class Script(scripts.Script):
         i = 0
         while i <job_count: 
             state.job = f"{state.job_no + 1} out of {state.job_count}"
+            promptItem = prompts_list[i]
             buildItem = copy.copy(p)
             buildItem.prompt = p.all_prompts [i]
             buildItem.negative_prompt = p.all_negative_prompts [i]
+            if 'width' in promptItem and promptItem['width']!=0:
+                buildItem.width= promptItem['width']
+            if 'height' in promptItem and promptItem['height'] !=0:
+                buildItem.height= promptItem['height']
+
             proc = process_images(buildItem)
             images += proc.images
+            # print( proc.info)
             i = i+1
         
         return Processed(p, images, p.seed, "", all_prompts=all_prompts, infotexts=infotexts) 
