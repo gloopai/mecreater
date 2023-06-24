@@ -367,9 +367,13 @@ prompts_list =  []
 
 
 # 加载数据  
-def yunyuan_load(guid,page):
+def yunyuan_load(guid,yunduan_only_reply,page):
     global prompts_list,yunduan_status
-    params = {"app_key":"bc01b43c-a0e2-4007-ad09-033b95cf1d6e", "method":"ai.center","data":{"command":"storyboard.task.get.by.webui","data":{"page":page,"task_guid":guid}}}
+    onlyReply = False
+    if yunduan_only_reply==['选择']:
+        onlyReply  = True
+
+    params = {"app_key":"bc01b43c-a0e2-4007-ad09-033b95cf1d6e", "method":"ai.center","data":{"command":"storyboard.task.get.by.webui","data":{"page":page,"task_guid":guid,"reply":onlyReply}}}
     header = {"x-token":""}
     try:
         res = requests.post(url="https://api.xiweiapp.com/v2/client",json=params,headers=header)
@@ -394,12 +398,12 @@ def yunyuan_load(guid,page):
         return f"{err}"
 
 # 读取远程脚本
-def yunduan_read_action(_p_yunduan_id):
+def yunduan_read_action(_p_yunduan_id,_p_yunduan_only_reply):
     if  _p_yunduan_id== '':
         return "请先输入云端脚本 GUID"
     global prompts_list
     prompts_list = []
-    return yunyuan_load(_p_yunduan_id,1)
+    return yunyuan_load(_p_yunduan_id,_p_yunduan_only_reply,1)
     
 # 清理云端脚本
 def yunduan_clear_action():
@@ -407,7 +411,7 @@ def yunduan_clear_action():
     global prompts_list,yunduan_status
     prompts_list = []
     yunduan_status = False
-    return "","云端脚本卸载完成"
+    return "",[],"云端脚本卸载完成"
 
 
 def piliang_model_change():
@@ -426,17 +430,19 @@ class Script(scripts.Script):
             with gr.Row():
                 gr.Markdown(yunduan_tips)
             with gr.Row():
-                with gr.Column(scale=1):
+                with gr.Column(scale=2):
                     yunduan_id = gr.Text(label="输入云端脚本Guid",info="输入云端脚本Guid后,点击[加载云端脚本],配置才会生效")
+                with gr.Column(scale=1):
+                    yunduan_only_reply = gr.CheckboxGroup(["选择"],  label="重绘", info="勾选后只会加载云端设置了重绘的分镜")
             with gr.Row():
                     yunduan_status = gr.Textbox(label="加载状态",value="未读取",info="请在这里显示加载成功后再进行图片生成")
             with gr.Row():
                 with gr.Column(scale=1):
                     yunduan_read= gr.Button(value="加载云端脚本",)
-                    yunduan_read.click(yunduan_read_action,inputs=[yunduan_id], outputs=yunduan_status)
+                    yunduan_read.click(yunduan_read_action,inputs=[yunduan_id,yunduan_only_reply], outputs=yunduan_status)
                 with gr.Column(scale=1):
                     yunduan_clear = gr.Button(value="卸载云端脚本")
-                    yunduan_clear.click(yunduan_clear_action,outputs=[yunduan_id,yunduan_status])
+                    yunduan_clear.click(yunduan_clear_action,outputs=[yunduan_id,yunduan_only_reply,yunduan_status])
         return [] 
     
     def run(self, p):
