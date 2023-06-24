@@ -100,7 +100,9 @@ git pull
 ## 推荐
 
 插件开发过程中，部分内容和功能借鉴了以下非常优秀的插件 
+
 AI漫画助手
+
 sdweb-easy-prompt-selector
 
 ## 结尾
