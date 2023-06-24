@@ -1,12 +1,7 @@
 # AI漫文创作助手
 基于Stable Diffusion WebUI 的网文生成动漫短视频使用的插件
 
-还在持续更新中 
-
-```
-最新版本号: 20230624
-```
-最新版本更新使用帮助 [点这里查看](https://jdi7lnndif.feishu.cn/docx/IKyad35BMoC21rxjwzFcTU2fnSg)
+最新版本更新信息以及使用帮助 [点这里查看](https://jdi7lnndif.feishu.cn/docx/IKyad35BMoC21rxjwzFcTU2fnSg)
 
 
 ## 安装方法
