@@ -4,43 +4,9 @@
 还在持续更新中 
 
 ```
-最新版本更新时间:2023-06-21
+最新版本号: 20230624
 ```
-
-## 最近更新
-20230621
-1.批量出图调整为使用脚本，不需要再手动配置出图数量
-2.增加云端脚本出图支持
-
-
-## 后续迭代计划
-
-1.lora 支持
-
-2.更多风格模版
-
-。。。。等你来提
-
-## 主要功能
-
-### 分镜脚本批量出图
-简化出图步骤，分镜内容独立控制，批量生成图片
-
-<img width="895" alt="image" src="https://github.com/codewithevan/mecreater/assets/4951627/1be63829-df45-4753-bb21-bf872a4db11c">
-
-
-### 批量出图分镜控制
-
-<img width="891" alt="image" src="https://github.com/codewithevan/mecreater/assets/4951627/0588c4c1-2220-4c74-8a79-fabdc777893d">
-
-
-### 画面风格微调处理
-
-精选风格提示词，并界面化操作，提示词会持续更新
-
-<img width="896" alt="image" src="https://github.com/codewithevan/mecreater/assets/4951627/9049e50b-dbc9-4918-9f0e-c5260c6e214e">
-
-
+最新版本更新使用帮助 [点这里查看](https://jdi7lnndif.feishu.cn/docx/IKyad35BMoC21rxjwzFcTU2fnSg)
 
 
 ## 安装方法
