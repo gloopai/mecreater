@@ -20,7 +20,7 @@ from modules.processing import process_images, Processed
 from modules.processing import Processed
 from modules.shared import opts, cmd_opts, state
 
-build_ver = "20230624"
+build_ver = "2023062501"
 
 
 # script
@@ -109,7 +109,7 @@ def yunyuan_load(guid,yunduan_only_reply,page):
         for item in data:
             prompts_list.append(item)
         if resjson['code']!=20001:
-            return yunyuan_load(guid,page+1)
+            return yunyuan_load(guid,yunduan_only_reply,page+1)
         else:
             yunduan_status = True
             resmsg = f'云端脚本 {guid} 加载完成，共计 {len(prompts_list)} 个分镜'
