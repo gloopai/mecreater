@@ -20,7 +20,47 @@ from modules.processing import process_images, Processed
 from modules.processing import Processed
 from modules.shared import opts, cmd_opts, state
 
-build_ver = "2023062501"
+build_ver = "2023062901"
+
+
+pannel_tips = """
+### 两种分镜切割的方法
+
+#### 💡 WebUi 提示词换行快速切割
+
+直接在SD WebUi 中利用提示词换行，有多少行，就出多少张图
+
+#### 💡 云端分镜脚本批量生成
+
+通过使用 https://ai.quwuxian.com 云端分镜脚本编辑器完成分镜脚本的编辑，在SD WebUi 中一键批量出图
+
+#### 🎸 这两种方法，都需要打开下方 脚本(Script) 中的 【AI漫文创作助手-批量出图】 根据提示完成出图操作
+
+#### 🎸 【AI漫文创作助手】完全兼容WebUi的各项设置，在不改变原生配置的前提下，进行了更灵活的扩充
+
+"""
+
+class ExtensionTemplateScript(scripts.Script):
+        # Extension title in menu UI
+        def title(self):
+                return "MeCreatePanel"
+
+        def show(self, is_img2img):
+                return scripts.AlwaysVisible
+
+        # Setup menu ui detail
+        def ui(self, is_img2img):
+                with gr.Accordion('AI漫文创作助手', open=False):
+                    with gr.Tab("使用帮助"):
+                        with gr.Row():
+                            gr.Markdown(pannel_tips)
+
+                               
+                # TODO: add more UI components (cf. https://gradio.app/docs/#components)
+                return []
+        
+
+
 
 
 # script
@@ -48,7 +88,6 @@ boy, sea,short hair,black hair,
 
 💡 如果已经顺利生成图片，那么恭喜，你可以愉快的玩耍了
 
-💡 如果没有出图，那请加 QQ群：173787712 我们一起看下是什么问题
 
 ```
 在这个模式下，提供了最灵活的提示词分段批量出图提高效率的方法，具备更高的灵活性，但是出图效果方面需要下一些功夫
@@ -74,7 +113,6 @@ yunduan_tips = """
 💡 脚本编辑完成后，会生成 脚本Guid ，复制后，黏贴到 这个界面的云端脚本Guid 中
 💡 黏贴好之后，点击【加载云端脚本】，将脚本内容加载到WebUi中
 💡 提示加载完成之后，就可以点击【生成图片】 按钮生成试一下了
-💡 有什么问题，那请加 QQ群：173787712 我们一起看下是什么问题
 🎃 每次在云端修改完脚本之后，都需要在这里重新加载一次，替换到原来的
 🎃 云端脚本使用完成后，需要点击【卸载云端脚本】 才会恢复到 提示词切割 的模式
 ```
