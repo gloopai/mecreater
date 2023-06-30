@@ -14,13 +14,13 @@ import random
 import modules.scripts as scripts
 import gradio as gr
 import os
-
+from PIL import Image as im, ImageDraw
 from modules import images, script_callbacks
 from modules.processing import process_images, Processed
 from modules.processing import Processed
 from modules.shared import opts, cmd_opts, state
 
-build_ver = "2023062901"
+build_ver = "2023063001"
 
 
 pannel_tips = """
@@ -50,7 +50,7 @@ class ExtensionTemplateScript(scripts.Script):
 
         # Setup menu ui detail
         def ui(self, is_img2img):
-                with gr.Accordion('AI漫文创作助手', open=False):
+                with gr.Accordion(f'AI漫文创作助手(ver {build_ver})', open=False):
                     with gr.Tab("使用帮助"):
                         with gr.Row():
                             gr.Markdown(pannel_tips)
@@ -205,7 +205,8 @@ class Script(scripts.Script):
         return [] 
     
     def run(self, p):
-        p.do_not_save_grid = True 
+        p.do_not_save_grid = True # 关闭网格图保存
+        p.do_not_save_samples = True # 关闭webui 保存图片
         global prompts_list,yunduan_status
 
         # 如果云端加载在关闭状态，就进行webui的提示词分割
@@ -213,11 +214,15 @@ class Script(scripts.Script):
             prompts_list = []
             oldPromptArr = []
             oldPromptArr = p.prompt.split("\n")
-            for item in oldPromptArr:
+            oldIndex = 0
+            while oldIndex < len(oldPromptArr):
+                item = oldPromptArr[oldIndex]
                 prompts_list.append({
                     "prompts":item,
-                    "negative_prompts":p.negative_prompt
+                    "negative_prompts":p.negative_prompt,
+                    "lens_number":'173787712'
                 })
+                oldIndex = oldIndex + 1
 
         # 处理prompts
         allPrompts = []
@@ -230,28 +235,57 @@ class Script(scripts.Script):
         p.all_prompts = allPrompts
         p.all_negative_prompts = allNegativePrompt
 
-        job_count = len(prompts_list)
+        print(f"\r\n ==| AI漫文创作助手 QQ群:173787712 批数:{p.n_iter}  单批:{p.batch_size}  分镜:{len(prompts_list)} |== \r\n")
+        
+        tmpPromptsList = []
+        # 批次，次数处理，填充临时数据
+        niterIndex = 0
+        while niterIndex < p.n_iter:
+            batchSizeIndex = 0
+            while batchSizeIndex < p.batch_size:
+                promptsIndex = 0
+                while promptsIndex < len(prompts_list):
+                    promptsTmpItem = prompts_list[promptsIndex]
+                    tmpPromptsList.append(promptsTmpItem)
+                    promptsIndex = promptsIndex + 1
+                batchSizeIndex = batchSizeIndex + 1
+            niterIndex = niterIndex +1
+        p.n_iter = 1
+        p.batch_size = 1
+        # 生图任务
+        job_count = len(tmpPromptsList)
         state.job_count = job_count
 
-        images = []
+
         all_prompts = []
+        buildImageList = []
         infotexts = []
         i = 0
+        # 开始循环任务生成图片
         while i <job_count: 
             state.job = f"{state.job_no + 1} out of {state.job_count}"
-            promptItem = prompts_list[i]
+            promptItem = tmpPromptsList[i]
             buildItem = copy.copy(p)
-            buildItem.prompt = p.all_prompts [i]
-            buildItem.negative_prompt = p.all_negative_prompts [i]
+            buildItem.prompt = promptItem['prompts'] #p.all_prompts [i]
+            buildItem.negative_prompt = promptItem['negative_prompts'] #p.all_negative_prompts [i]
             if 'width' in promptItem and promptItem['width']!=0:
                 buildItem.width= promptItem['width']
             if 'height' in promptItem and promptItem['height'] !=0:
                 buildItem.height= promptItem['height']
 
             proc = process_images(buildItem)
-            images += proc.images
-            # print( proc.info)
+            sIndex = len(proc.images)-1
+            imgItem = proc.images[sIndex]
+            images.save_image(
+                        image=imgItem,
+                        path= f'{p.outpath_samples}/mecreate',
+                        basename=f'{promptItem["lens_number"]}',
+                        info=proc.info, 
+                        p=p,short_filename=True)
+            buildImageList += proc.images
             i = i+1
         
-        return Processed(p, images, p.seed, "", all_prompts=all_prompts, infotexts=infotexts) 
+        print(f"\r\n==| AI漫文创作助手 出图完成 合计出图:{job_count} 张\r\n")
+        
+        return Processed(p, buildImageList, p.seed, "", all_prompts=all_prompts, infotexts=infotexts) 
    
