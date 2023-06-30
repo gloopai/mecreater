@@ -20,7 +20,7 @@ from modules.processing import process_images, Processed
 from modules.processing import Processed
 from modules.shared import opts, cmd_opts, state
 
-build_ver = "2023063001"
+build_ver = "2023063002"
 
 
 pannel_tips = """
