@@ -220,7 +220,8 @@ class Script(scripts.Script):
                 prompts_list.append({
                     "prompts":item,
                     "negative_prompts":p.negative_prompt,
-                    "lens_number":'173787712'
+                    "lens_number":'173787712',
+                    "title":"default"
                 })
                 oldIndex = oldIndex + 1
 
@@ -276,9 +277,14 @@ class Script(scripts.Script):
             proc = process_images(buildItem)
             sIndex = len(proc.images)-1
             imgItem = proc.images[sIndex]
+
+            saveForder = f'{p.outpath_samples}/mecreate'
+            if "title" in promptItem:
+                if promptItem["title"] != "":
+                    saveForder = f'{saveForder}/{promptItem["title"]}'
             images.save_image(
                         image=imgItem,
-                        path= f'{p.outpath_samples}/mecreate',
+                        path= saveForder,
                         basename=f'{promptItem["lens_number"]}',
                         info=proc.info, 
                         p=p,short_filename=True)
