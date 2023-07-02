@@ -20,7 +20,7 @@ from modules.processing import process_images, Processed
 from modules.processing import Processed
 from modules.shared import opts, cmd_opts, state
 
-build_ver = "2023063002"
+build_ver = "2023070101"
 
 
 pannel_tips = """
@@ -78,7 +78,7 @@ prompts_split_tip = """
 ### 🪄 你可以尝试一下，在提示词中输入下面这段内容
 
 ```
-gril, car,short hair,red hair, sports bra , 
+girl, car,short hair,red hair, sports bra , 
 boy, sea,short hair,black hair,  
 ```
 
