@@ -1,4 +1,5 @@
 from modules.shared import opts, cmd_opts, state
+import random
 
 
 def build_prompts(self,p):
@@ -57,6 +58,31 @@ def build_prompts(self,p):
     state.job_count = job_count
     return self,p,tmpPromptsList
 
+import copy
+shijiao_list = ["full body",
+                "upper body",
+                "cowboy shot",
+                "from the left",
+                "from the right",
+                "from behind",
+                "panoramic view",
+                "wide-angle view"]
+def trigger_prompts(item):
+    # print(item)
+    itemPrompts= item['prompts']
+    # 随机镜头触发词
+    if "[mecreater:rand_screen_lens]" in itemPrompts:
+        rand_screen_lens = random.choice(shijiao_list)
+        # print(rand_screen_lens)
+        itemPrompts = itemPrompts.replace("[mecreater:rand_screen_lens]",rand_screen_lens,1)
+        
+    # if "[mecreater:clear_no_humans]" in itemPrompts:
+    #     if ",no humans" in itemPrompts:
+    #         itemPrompts = itemPrompts.replace(",no humans","",1)
+    item['prompts'] = itemPrompts
+    # print(itemPrompts)
+    return item
+
 # 根据批次和数量创建prompt队列
 def build_prompts_with_batch(prompts_list,p):
     tmpPromptsList = []
@@ -69,13 +95,16 @@ def build_prompts_with_batch(prompts_list,p):
             niterIndex = niterIndex +1
             batchSizeIndex = 0
             while batchSizeIndex < p.batch_size:
-                tmpPromptsList.append(promptsTmpItem)
+                promptsTmpItemCopy = trigger_prompts(copy.copy(promptsTmpItem))
+                tmpPromptsList.append(promptsTmpItemCopy)
                 batchSizeIndex = batchSizeIndex + 1
     return tmpPromptsList
 
 
+
+
 # 生成图片
-import copy
+
 from modules.processing import process_images, Processed
 from modules import images, script_callbacks
 def build_images(self,p):
@@ -89,6 +118,7 @@ def build_images(self,p):
     while i <job_count: 
         state.job = f"{state.job_no + 1} out of {state.job_count}"
         promptItem = prompts_list[i]
+        # print(promptItem)
         buildItem = copy.copy(p)
         buildItem.prompt = promptItem['prompts'] #p.all_prompts [i]
         buildItem.negative_prompt = promptItem['negative_prompts'] #p.all_negative_prompts [i]

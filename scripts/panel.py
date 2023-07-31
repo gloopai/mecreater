@@ -36,7 +36,7 @@ from scripts.rp.build import(lange,commondealer,hrdealer,anddealer,tokendealer,
 
 orig_batch_cond_uncond = shared.batch_cond_uncond
 
-build_ver = "2023071801"
+build_ver = "2023073101"
 
 
 # 面板
